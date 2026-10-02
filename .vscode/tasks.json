@@ -1,0 +1,49 @@
+{
+  // Ctrl+Shift+P → "Tasks: Run Task" → "LiveMod: iniciar todo"
+  // Abre las 3 terminales (Spark, web, productor) una al lado de la otra.
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "1 · Spark (moderador)",
+      "type": "shell",
+      "command": "python moderador_spark.py",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": { "group": "livemod", "panel": "dedicated", "reveal": "always" }
+    },
+    {
+      "label": "2 · Web",
+      "type": "shell",
+      "command": "python servidor_web.py",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": { "group": "livemod", "panel": "dedicated", "reveal": "always" }
+    },
+    {
+      "label": "3 · Productor (chat)",
+      "type": "shell",
+      "command": "python productor.py",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": { "group": "livemod", "panel": "dedicated", "reveal": "always" }
+    },
+    {
+      "label": "LiveMod: iniciar todo",
+      "dependsOn": ["1 · Spark (moderador)", "2 · Web", "3 · Productor (chat)"],
+      "dependsOrder": "parallel",
+      "problemMatcher": []
+    },
+    {
+      "label": "LiveMod: verificar PC",
+      "type": "shell",
+      "command": "python verificar.py",
+      "problemMatcher": []
+    },
+    {
+      "label": "LiveMod: limpiar datos",
+      "type": "shell",
+      "command": "python limpiar.py",
+      "problemMatcher": []
+    }
+  ]
+}

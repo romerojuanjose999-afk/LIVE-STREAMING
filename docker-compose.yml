@@ -1,0 +1,27 @@
+# Levanta los 3 procesos. Para verlos por separado (como 3 terminales):
+#   docker compose logs -f productor
+#   docker compose logs -f moderador
+services:
+  moderador:
+    build: .
+    image: livemod-spark
+    command: python moderador_spark.py
+    volumes: ["./data:/app/data"]
+    ports: ["4040:4040"]          # Spark UI
+    tty: true
+
+  productor:
+    build: .
+    image: livemod-spark
+    command: python productor.py
+    volumes: ["./data:/app/data"]
+    depends_on: [moderador]
+    tty: true
+
+  web:
+    build: .
+    image: livemod-spark
+    command: python servidor_web.py
+    volumes: ["./data:/app/data"]
+    ports: ["8000:8000"]
+    depends_on: [moderador]
