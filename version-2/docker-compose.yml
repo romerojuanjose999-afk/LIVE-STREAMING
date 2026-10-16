@@ -1,0 +1,36 @@
+# Infraestructura del proyecto: Kafka + MySQL (+ Adminer para ver las tablas en el navegador)
+#   docker compose up -d        → levanta todo en segundo plano
+#   docker compose ps           → ver que estén "running"/"healthy"
+#   docker compose down         → apagar (los datos de MySQL se conservan)
+#   docker compose down -v      → apagar y BORRAR los datos
+services:
+  kafka:
+    image: apache/kafka:3.9.0          # Kafka en modo KRaft (sin Zookeeper), 1 nodo
+    container_name: livemod-kafka
+    ports: ["9092:9092"]               # los .py se conectan a localhost:9092
+
+  mysql:
+    image: mysql:8.4
+    container_name: livemod-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: livemod
+      MYSQL_USER: livemod
+      MYSQL_PASSWORD: livemod123
+      TZ: America/Bogota
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+    ports: ["3307:3306"]               # 3307 en el PC para no chocar con XAMPP
+    volumes: ["mysql_datos:/var/lib/mysql"]
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot123"]
+      interval: 5s
+      retries: 20
+
+  adminer:                             # http://localhost:8080  (Servidor: mysql · Usuario: livemod · Clave: livemod123)
+    image: adminer:4.8.1
+    container_name: livemod-adminer
+    ports: ["8080:8080"]
+    depends_on: [mysql]
+
+volumes:
+  mysql_datos:
